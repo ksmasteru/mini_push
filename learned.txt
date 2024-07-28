@@ -1,0 +1,4 @@
+each process has to wait for the previpus process with waitpid. or some command will stuck
+on read
+you have &str and you want  to inccrement str : *(*str)++ the qoutes
+are necessary. alayws quote what you want to inncrement.

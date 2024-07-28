@@ -1,0 +1,9 @@
+export a=f prints a = f
+
+just handled env and export :: more testing..
+
+echo $HOME'PWD'$PWD$HO
+
+ls | < out wc -w
+
+"gfgfgfgfgg"'gg is syntax error. not handled -- call get quoted word if  word starts with quotes

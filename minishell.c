@@ -1,0 +1,108 @@
+#include "minishell.h"
+#include "parser.h"
+#include "pipes.h"
+#include "tokens.h"
+#include "sys/wait.h"
+#include "executer.h"
+// HANDLING '' "" inside expantion tokenization.c:261
+void show_env(t_data *data, int is_export);
+void built_in(int op, t_data *data, t_token *token);
+char*	read_cmd()
+{
+	char *line;
+
+	line = readline("\e[0;32m[minishell]$ \e[0;0m");
+	if (!line)
+		exit(-1);
+	if (access(".tmp.txt", F_OK) == 0)
+		unlink(".tmp.txt");
+	//add_history(line);
+	return (line);
+}
+
+
+void export_cmd(int op, char *line, t_data *data)
+{
+	t_token *tokens;
+
+	tokens = lexer(line, data->env_lst);
+	tokens_v2(&tokens, data);
+	built_in(op, data, tokens);
+}
+int check_builtin2(char *line, t_data *data)
+{
+	if (ft_strlen(line) >= 5)
+	{
+		if (strncmp("unset", line, 5) == 0 && (line[5] == 32 || line[5] == 0))
+		{
+			export_cmd(2, line, data);
+			return (1);
+		}
+	}
+	if (ft_strlen(line) >= 3)
+	{
+		if (strncmp("env", line, 3) == 0 && (line[3] == 32 || line[3] == 0))
+		{
+			show_env(data, 0);
+			return (1);
+		}
+	}
+	if (strcmp(line, "exit") == 0)
+		exit(0);
+	return (0);
+}
+int check_builtin(char *line, t_data *data)
+{
+	if (line[0] == 'c' && line[1] == 'd' && line[2] == 32)
+	{
+		line[ft_strlen(line)] = '\0';
+		if (chdir(line + 3) < 0) /* doesnt handle expantion.quotes*/
+			perror("chdir");
+		return (1);
+	}
+	if (ft_strlen(line) >= 6)
+	{
+		if (strncmp("export", line, 6) == 0 && (line[6] == 32 || line[6] == 0))
+		{
+			export_cmd(1, line, data);
+			return (1);
+		}
+	}
+	return (check_builtin2(line, data));
+}
+
+void set_data_variables(t_data *data, char **envp)
+{
+	data->envp = envp;
+    data->words_count = 1;
+    data->flag = 0;
+	data->env_lst = NULL;
+    env_to_lst(envp, data);
+	data->env = get_envp(envp);
+	data->mem_ref = NULL;
+}
+
+void free_ref(t_data *data_ref);
+
+int main(int ac, char **av, char **envp)
+{
+	char *line;
+	int pid;
+	int i = 0;
+	t_data data;
+	set_data_variables(&data, envp);
+	//show_env(&data);
+	while (1)
+	{
+		line = read_cmd();
+		if (check_builtin(line, &data))
+			continue;
+		pid = fork();
+		if (pid == 0)
+			parse_cmd(line , envp, &data);
+		else
+			waitpid(pid, NULL, 0);
+		//free_ref(data.mem_ref);// why would i need this
+	}
+	return (0);
+}
