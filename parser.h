@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <stdbool.h>
 #include "tokens.h"
 #include "minishell.h"
 typedef struct s_stack{
@@ -61,6 +62,7 @@ int find_value(t_slice *location, int key);
 int find_key(t_slice *slice);
 void env(char **env);
 void echo(char *str);
+bool is_empty(char *line);
 #endif
 
 // tokenize simple command ---> pipe -->tokinize simple command in a recursive 

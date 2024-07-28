@@ -39,17 +39,12 @@ void env(char **env)
     write (1, "\n", 1);
   }
 }
-
+// return the lent of key : also handles some errors
 int find_key(t_slice *slice)
 {
-  //ddd = : error"
-  //=:error
-  //
-  // newval=new; ---> key = 6
   int i;
 
   i = 0;
-  // if the slice start with = error
   if ((slice->location)[i] == '=')
   {
     write (1, "export: `", 10);
@@ -61,11 +56,9 @@ int find_key(t_slice *slice)
   }
   else
   {
-    //aaaaa=
     while (i < slice->lenght)
     {
-      printf("%c\n", slice->location[i]);
-      if ((slice->location)[i] == '=')// this
+      if ((slice->location)[i] == '=')
         break;
       i++;
     }
@@ -90,7 +83,7 @@ t_lst *export_value(t_data *data, t_token *token)
   t_lst *key_val;
   t_lst *val_val;
   
-  key = find_key(&(token->location)); //key = 6;
+  key = find_key(&(token->location));
   if (key == -1)
     return (NULL);
   value = find_value(&(token->location), key);
@@ -133,6 +126,7 @@ int swap_if_key(t_lst **head, t_lst *pair)
   }
   return (-1);
 }
+
 void  add_val_to_env(t_lst *pair, t_data *data)
 {
   char *new_val;
@@ -156,9 +150,15 @@ void show_env(t_data *data, int is_export)
     ft_putstr(1, tmp->data);
     if (tmp->value)
       write(1, "=", 1);
+    else
+    {
+      write (1, "\n", 1);
+      tmp = tmp->next;
+      continue;
+    }
     write(1, &c, 1);
     if (tmp->value)
-    ft_putstr(1, tmp->value->data);
+      ft_putstr(1, tmp->value->data);
     write(1, &c, 1);
     write(1, "\n", 1);
     tmp = tmp->next;

@@ -39,17 +39,17 @@ void lst_addback(t_lst **head, t_lst *new_lst)
     tmp = tmp->next;
   tmp->next = new_lst;
 }
+/*env[i] to key-value separated by =*/
 t_lst *get_pair(char *str)
 {
   int i;
   t_lst *pair;
-  // no need for parsing environment.
+
   i = 0;
   while (str[i] && str[i] != '=' && str[i] != '\n')
     i++;
-  //printf("str i is %c and i is %d\n", str[i],i);
   pair = new_list(str, i);
-  if (str[i] != '=') // no value found
+  if (str[i] != '=')
     pair->value = NULL;
   else
   {
@@ -57,8 +57,8 @@ t_lst *get_pair(char *str)
   }
   return (pair);
 }
-
-void env_to_lst(char **env, t_data *data)
+/* stores the environnem into alist of key-pair values */
+void  env_to_lst(char **env, t_data *data)
 {
   int i;
   t_lst *head;

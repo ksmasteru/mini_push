@@ -4,9 +4,27 @@
 #include "tokens.h"
 #include "sys/wait.h"
 #include "executer.h"
+#include <stdbool.h>
+
 // HANDLING '' "" inside expantion tokenization.c:261
 void show_env(t_data *data, int is_export);
 void built_in(int op, t_data *data, t_token *token);
+bool is_empty(char *line)
+{
+	int i;
+
+	i = 0;
+	if (line[0] == 0)
+		return (true);
+	while (line[i] == 32 ||  (line[i] >= 9 && line[i] <= 13))
+		i++;
+	if (line[i] == 0 || line[i] == '\n')
+	{
+		free(line);
+		return (true);
+	}
+	return (false);
+}
 char*	read_cmd()
 {
 	char *line;
@@ -14,6 +32,8 @@ char*	read_cmd()
 	line = readline("\e[0;32m[minishell]$ \e[0;0m");
 	if (!line)
 		exit(-1);
+	if (is_empty(line))
+		return (NULL);
 	if (access(".tmp.txt", F_OK) == 0)
 		unlink(".tmp.txt");
 	//add_history(line);
@@ -36,6 +56,7 @@ int check_builtin2(char *line, t_data *data)
 		if (strncmp("unset", line, 5) == 0 && (line[5] == 32 || line[5] == 0))
 		{
 			export_cmd(2, line, data);
+			free(line);
 			return (1);
 		}
 	}
@@ -44,11 +65,24 @@ int check_builtin2(char *line, t_data *data)
 		if (strncmp("env", line, 3) == 0 && (line[3] == 32 || line[3] == 0))
 		{
 			show_env(data, 0);
+			free(line);
 			return (1);
 		}
 	}
 	if (strcmp(line, "exit") == 0)
+	{
+		free(line);
 		exit(0);
+	}
+	if (ft_strlen(line) >= 4)
+	{
+		if (strncmp("echo", line, 4) == 0 && (line[4] == 32 || line[3] == 0))
+		{
+			echo(data);
+			free(line);
+			return (1);
+		}
+	}
 	return (0);
 }
 int check_builtin(char *line, t_data *data)
@@ -56,16 +90,22 @@ int check_builtin(char *line, t_data *data)
 	if (line[0] == 'c' && line[1] == 'd' && line[2] == 32)
 	{
 		line[ft_strlen(line)] = '\0';
-		if (chdir(line + 3) < 0) /* doesnt handle expantion.quotes*/
+		if (chdir(line + 3) < 0)
 			perror("chdir");
-		return (1);
+		{
+			free(line);
+			return (1);
+		}
 	}
 	if (ft_strlen(line) >= 6)
 	{
 		if (strncmp("export", line, 6) == 0 && (line[6] == 32 || line[6] == 0))
 		{
 			export_cmd(1, line, data);
-			return (1);
+			{
+				free(line);
+				return (1);
+			}
 		}
 	}
 	return (check_builtin2(line, data));
@@ -91,10 +131,11 @@ int main(int ac, char **av, char **envp)
 	int i = 0;
 	t_data data;
 	set_data_variables(&data, envp);
-	//show_env(&data);
 	while (1)
 	{
 		line = read_cmd();
+		if (!line)
+			continue;
 		if (check_builtin(line, &data))
 			continue;
 		pid = fork();
@@ -102,7 +143,7 @@ int main(int ac, char **av, char **envp)
 			parse_cmd(line , envp, &data);
 		else
 			waitpid(pid, NULL, 0);
-		//free_ref(data.mem_ref);// why would i need this
+		free(line);
 	}
 	return (0);
 }
