@@ -9,6 +9,17 @@
 
 void unset(t_data *data, t_token *token);
 void show_env(t_data *data);
+void free_2d_str(char **str)
+{
+    int i;
+
+    i = 0;
+    while (str[i])
+        free(str[i++]);
+    free(str[i]);
+    free(str);
+}
+
 int ft_strlen(char *s1)
 {
      int i;
@@ -77,7 +88,7 @@ char **get_word_args(t_tree *head)
      while (tmp)
      {
           words_number++;
-          tmp = tmp->up;   
+          tmp = tmp->up; 
      }
      args = (char **) malloc(sizeof(char *) * (words_number + 1));
      if (!args)
@@ -349,12 +360,20 @@ int execute_cmd(t_tree *head, int index, int len, t_data *data)
           exit(0);
      }
      else
+     {
+          if (args)
+               free_2d_str(args);
+          if (cmd)
+               free(cmd);
+          free_tokens(head);
+          free(head);
           return (0);
+     }
 }
 
 void run_cmd(t_tree **head, int index, int len, t_data *data)
 {
-     if (*head == NULL)  
+     if (*head == NULL)
           return ;
      if ((*head)->type == WORD || (*head)->type == REIDRECTION)
           return ;
@@ -369,6 +388,4 @@ void run_cmd(t_tree **head, int index, int len, t_data *data)
           execute_cmd((*head)->right, index, len,data);
          // waitpid(data->pids[index], NULL, 0);
      }
-
-
 }

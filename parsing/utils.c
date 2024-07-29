@@ -119,5 +119,42 @@ void pop_error(int exit_code, char *str)
     exit(exit_code);
 }
 
+void free_ls(t_token **token, int direction)
+{
+     t_token *tmp;
+     t_token *holder;
 
+     tmp = *token;
+     while (tmp)
+     {
+        if (direction == 1)
+            holder = tmp->next;
+        else if (direction == 2)
+            holder = tmp->up;
+        else
+            holder = tmp->down;
+        free(tmp);
+        tmp = holder;
+     }
+     *token = NULL;
+}
 
+void free_tokens(t_tree *tree)
+{
+     if (tree->token)
+     {
+          free_ls(&(tree->token->up), 2);
+          free_ls(&(tree->token->down), 3);
+     }
+}
+
+void _free_data(t_data *data)
+{
+    int i;
+
+    i = 0;
+    while (data->fdx[i])
+        free(data->fdx[i++]);
+    free(data->fdx);
+    free(data->pids);
+}

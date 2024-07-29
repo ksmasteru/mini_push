@@ -269,7 +269,7 @@ void check_syntax_error (t_token **tokens)
         syntax_error(3, tokens);
 }
 
-void improve_tokens(t_token **tokens, t_data *data)
+void improve_tokens(t_token **tokens, t_data *data)/*leajks ?*/
 {
     t_token *tmp;
     t_token *shunk;
@@ -286,7 +286,7 @@ void improve_tokens(t_token **tokens, t_data *data)
         if ((*tokens)->type == PIPE)
         {
             data->words_count++;
-            ft_list_addback(&final_list, (*tokens));  // adding the pipe
+            ft_list_addback(&final_list, (*tokens));
             *tokens = (*tokens)->next;
         }
     }

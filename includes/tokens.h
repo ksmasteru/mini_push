@@ -30,7 +30,6 @@ typedef enum s_token_type{
 typedef struct s_slice{
     char *location;
     size_t lenght;
-    struct s_slice *next;
 }t_slice;
 
 typedef struct s_token{
@@ -90,4 +89,6 @@ void token_overdrive(t_token **tokens);
 void left_root_right(t_tree **root);
 void check_syntax_error (t_token **tokens);
 int syntax_error(int code, t_token **tokens);
+void free_ls(t_token **token, int direction);
+void free_tokens(t_tree *tree);
 #endif
