@@ -10,8 +10,8 @@
 */
 
 
-#include "tokens.h"
-#include "parser.h"
+#include "../includes/tokens.h"
+#include "../includes/parser.h"
 // will start testing with pipes, redirections later
 // when to change the plan ? special characters ?
 t_tree *parse_word(t_token **head, t_data *data)

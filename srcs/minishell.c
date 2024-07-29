@@ -1,9 +1,9 @@
-#include "minishell.h"
-#include "parser.h"
-#include "pipes.h"
-#include "tokens.h"
+#include "../includes/minishell.h"
+#include "../includes/parser.h"
+#include "../includes/pipes.h"
+#include "../includes/tokens.h"
 #include "sys/wait.h"
-#include "executer.h"
+#include "../includes/executer.h"
 #include <stdbool.h>
 
 // HANDLING '' "" inside expantion tokenization.c:261
@@ -74,7 +74,7 @@ int check_builtin2(char *line, t_data *data)
 		free(line);
 		exit(0);
 	}
-	if (ft_strlen(line) >= 4)
+	/*if (ft_strlen(line) >= 4)
 	{
 		if (strncmp("echo", line, 4) == 0 && (line[4] == 32 || line[3] == 0))
 		{
@@ -82,7 +82,7 @@ int check_builtin2(char *line, t_data *data)
 			free(line);
 			return (1);
 		}
-	}
+	}*/
 	return (0);
 }
 int check_builtin(char *line, t_data *data)

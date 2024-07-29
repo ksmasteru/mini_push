@@ -1,6 +1,5 @@
-
-#include "tokens.h"
-#include "parser.h"
+#include "../includes/tokens.h"
+#include "../includes/parser.h"
 /* traverse the binary tree depth first search*/
 
 t_stack *new_node(t_stack **head, t_tree *addr)

@@ -1,9 +1,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
-#include "minishell.h"
-#include "parser.h"
-#include "executer.h"
+#include "../includes/minishell.h"
+#include "../includes/parser.h"
+#include "../includes/executer.h"
 
 t_lst *new_list(char *str, int len)
 {

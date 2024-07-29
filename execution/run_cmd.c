@@ -1,8 +1,8 @@
-#include "tokens.h"
-#include "executer.h"
-#include "parser.h"
-#include "pipes.h"
-#include "executer.h"
+#include "../includes/tokens.h"
+#include "../includes/executer.h"
+#include "../includes/parser.h"
+#include "../includes/pipes.h"
+#include "../includes/executer.h"
 #include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>

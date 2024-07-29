@@ -2,8 +2,8 @@ NAME = minishell
 CC = cc
 CFLAGS = -g -fsanitize=address
 
-SRCS = minishell.c tokenization.c makers.c tokens_v2.c parser.c run_cmd.c get_paths.c \
-		 ft_split.c get_envp.c ft_strjoin.c env_to_list.c echo.c
+SRCS = srcs/minishell.c parsing/tokenization.c srcs/makers.c parsing/tokens_v2.c parsing/parser.c execution/run_cmd.c execution/get_paths.c \
+		 parsing/ft_split.c execution/get_envp.c srcs/ft_strjoin.c srcs/env_to_list.c srcs/echo.c
 
 OBJS = $(SRCS:.c=.o)
 

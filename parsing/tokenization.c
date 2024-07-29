@@ -1,7 +1,7 @@
-#include "tokens.h"
-#include "parser.h"
-#include "pipes.h"
-#include "executer.h"
+#include "../includes/tokens.h"
+#include "../includes/parser.h"
+#include "../includes/pipes.h"
+#include "../includes/executer.h"
 #include "math.h"
 // < redirection id followed by the filename
 // unless it is a heredoc << it is followed by a delimiter

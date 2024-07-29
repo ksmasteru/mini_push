@@ -1,5 +1,5 @@
-#include "tokens.h"
-#include "parser.h"
+#include "../includes/tokens.h"
+#include "../includes/parser.h"
 
 void merge_words(t_token **current, t_token **next)
 {

@@ -1,5 +1,5 @@
-#include "minishell.h"
-#include "tokens.h"
+#include "../includes/minishell.h"
+#include "../includes/tokens.h"
 
 t_tree *make_pipe_cmd(t_tree *left, t_tree *right)
 {

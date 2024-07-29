@@ -1,7 +1,7 @@
-#include "minishell.h"
-#include "tokens.h"
-#include "parser.h"
-#include "executer.h"
+#include "../includes/minishell.h"
+#include "../includes/tokens.h"
+#include "../includes/parser.h"
+#include "../includes/executer.h"
 
 void ft_putstr(int fd, char *str)
 {
