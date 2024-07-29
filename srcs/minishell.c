@@ -25,6 +25,8 @@ bool is_empty(char *line)
 	}
 	return (false);
 }
+
+/* returns null if empty line + frees it*/
 char*	read_cmd()
 {
 	char *line;
@@ -85,6 +87,8 @@ int check_builtin2(char *line, t_data *data)
 	}*/
 	return (0);
 }
+
+/*frees the line after running the builting command.*/
 int check_builtin(char *line, t_data *data)
 {
 	if (line[0] == 'c' && line[1] == 'd' && line[2] == 32)

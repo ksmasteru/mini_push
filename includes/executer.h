@@ -25,4 +25,7 @@ char	*ft_strjoin2(char *s1, char *s2, char *str);
 int manage_redirections(t_token *redirection);
 int do_redirect(t_token *redirection);
 char *get_file_name(char *location, size_t lent);
+void run_multiple_commands(t_tree *root ,t_data *data);
+int parse_cmd(char *line, char **envp, t_data *data);
+
 #endif

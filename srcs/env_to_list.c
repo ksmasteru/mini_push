@@ -57,7 +57,7 @@ t_lst *get_pair(char *str)
   }
   return (pair);
 }
-/* stores the environnem into alist of key-pair values */
+/* stores the environnement into a list of key-pair values */
 void  env_to_lst(char **env, t_data *data)
 {
   int i;

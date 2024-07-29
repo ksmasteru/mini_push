@@ -63,7 +63,22 @@ int find_key(t_slice *slice);
 void env(char **env);
 void echo(char *str);
 bool is_empty(char *line);
+char *qouted_word(char **str, char *start, t_lst *env_lst);
+char *word_till_quotes(char *str, t_lst *env_lst);
+char *clean_quotes_from_word(char *quoted_word, int len, int qoute);
+char *make_quoted_word(char **str, int c ,t_lst *env_lst);
+char *inside_quoted_word(char **str ,int c);
+char *clean_quotes_from_word(char *res, int j, int c);
+char *expand_quoted_word(char *str, t_lst *env_lst);
+char *word_till_space(char **str, t_lst *env_lst);
+void pop_error(int exit_code, char *str);
+char *expantion(char **str, t_lst *env_lst);
+char *close_expanded_word(char *whole_word, char **str);
+char *expand_word(char **str, char *start, t_lst *env_lst
+,char closing_quotes);
+char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst);
+char *expand_quoted_word(char *str, t_lst *env_lst);
+char *word_till_dollar(char **str, char *start);
+char *ft_strcat(char *str, char c);
+char *get_expanded_word(char *expand_word, t_lst *env_lst);
 #endif
-
-// tokenize simple command ---> pipe -->tokinize simple command in a recursive 
-// manne
