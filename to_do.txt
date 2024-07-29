@@ -1,0 +1,5 @@
+free(data->env);
+free(data->env_lst) ://has pair key : has next value
+and data which malloced
+
+should be freed when ctrl c is pressed

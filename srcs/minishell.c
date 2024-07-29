@@ -38,7 +38,7 @@ char*	read_cmd()
 		return (NULL);
 	if (access(".tmp.txt", F_OK) == 0)
 		unlink(".tmp.txt");
-	//add_history(line);
+	add_history(line);
 	return (line);
 }
 
