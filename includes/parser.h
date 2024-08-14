@@ -62,6 +62,7 @@ int find_value(t_slice *location, int key);
 int find_key(t_slice *slice);
 void env(char **env);
 void echo(char *str);
+void ft_echo(t_token *tmp, bool n);
 bool is_empty(char *line);
 char *qouted_word(char **str, char *start, t_lst *env_lst);
 char *word_till_quotes(char *str, t_lst *env_lst);

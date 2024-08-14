@@ -27,5 +27,11 @@ int do_redirect(t_token *redirection);
 char *get_file_name(char *location, size_t lent);
 void run_multiple_commands(t_tree *root ,t_data *data);
 int parse_cmd(char *line, char **envp, t_data *data);
-
+void handle_sigint2(int sig);
+void handle_sigquit(int sig);
+void handle_sigint1(int sig);
+void ft_echo2(t_data *data, char *line);
+bool check_echo_n(t_token *tmp);
+int set_exec_args(t_tree *head, t_data *data, char ***args, char **cmd);
+void free_exec_args(char **args, char *cmd, t_tree *head);
 #endif

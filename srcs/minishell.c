@@ -2,11 +2,13 @@
 #include "../includes/parser.h"
 #include "../includes/pipes.h"
 #include "../includes/tokens.h"
+#include "../includes/executer.h"
 #include "sys/wait.h"
 #include "../includes/executer.h"
 #include <stdbool.h>
 
 // HANDLING '' "" inside expantion tokenization.c:261
+// tokens arent freed  in builtns
 void show_env(t_data *data, int is_export);
 void built_in(int op, t_data *data, t_token *token);
 bool is_empty(char *line)
@@ -53,6 +55,8 @@ void export_cmd(int op, char *line, t_data *data)
 }
 int check_builtin2(char *line, t_data *data)
 {
+	t_token *tokens;
+
 	if (ft_strlen(line) >= 5)
 	{
 		if (strncmp("unset", line, 5) == 0 && (line[5] == 32 || line[5] == 0))
@@ -76,15 +80,15 @@ int check_builtin2(char *line, t_data *data)
 		free(line);
 		exit(0);
 	}
-	/*if (ft_strlen(line) >= 4)
+	if (ft_strlen(line) >= 4)
 	{
 		if (strncmp("echo", line, 4) == 0 && (line[4] == 32 || line[3] == 0))
 		{
-			echo(data);
+			ft_echo2(data, line);
 			free(line);
 			return (1);
 		}
-	}*/
+	}
 	return (0);
 }
 
@@ -128,6 +132,8 @@ void set_data_variables(t_data *data, char **envp)
 
 void free_ref(t_data *data_ref);
 
+
+
 int main(int ac, char **av, char **envp)
 {
 	char *line;
@@ -137,9 +143,13 @@ int main(int ac, char **av, char **envp)
 	set_data_variables(&data, envp);
 	while (1)
 	{
+		signal(SIGINT, handle_sigint1);
+		signal(SIGQUIT, SIG_IGN);
 		line = read_cmd();
 		if (!line)
 			continue;
+		signal(SIGINT, handle_sigint2);
+		signal(SIGQUIT, handle_sigquit); 
 		if (check_builtin(line, &data))
 			continue;
 		pid = fork();

@@ -6,7 +6,7 @@
 /*   By: hes-saqu <hes-saqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:33:00 by hes-saqu          #+#    #+#             */
-/*   Updated: 2024/07/29 15:50:30 by hes-saqu         ###   ########.fr       */
+/*   Updated: 2024/08/14 12:38:57 by hes-saqu         ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -45,10 +45,10 @@ char	*get_path(char **paths, char *cmd)
 	{
 		path_jnd = ft_strjoin(paths[i], "/");
 		cmd_path = ft_strjoin(path_jnd, cmd);
-		//free(path_jnd);
+		free(path_jnd);
 		if (access(cmd_path, X_OK | F_OK) == 0)
 			return (cmd_path);
-		//free(cmd_path); new_
+		free(cmd_path);
 		i++;
 	}
 	//write(1, "command not found:", 18);

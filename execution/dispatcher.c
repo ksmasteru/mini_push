@@ -33,16 +33,12 @@ int parse_cmd(char *line, char **envp, t_data *data)
     tokens = lexer(line, data->env_lst);
 	tokens_v2(&tokens, data);
     root = parser(tokens, data);
-    data->env = get_envp(data->envp);// allocates;
     if (access(".tmp.txt", F_OK))
         unlink(".tmp.txt");
     if (data->words_count > 1)
         run_multiple_commands(root ,data);
     else
-    {
         execute_cmd(root, 0, 1, data);
-        free(root);
-    }
     free_ls(&tokens, 1);
     exit (0);
 }

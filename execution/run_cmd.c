@@ -123,7 +123,6 @@ int close_all_pipes(int **pfx, int len)
 /* test again with bash not zsh*/
 int close_and_dup2(int **pfx, int index, int len, int flag)
 {
-
      if (index == 0 && flag != 1)
           dup2(pfx[0][1], 1);
      else if (index == len - 1)
@@ -155,40 +154,25 @@ void built_in(int op, t_data *data, t_token *token)
 //ls | cat | cat | cat
 int run_cmd_main(char **args, char *cmd, t_tree *head, t_data *data)
 {
-     // reduce the ifs
      int i;
 
      i = 0;
-     if (data->index != 0) // triple wc -w works with wait only
+     if (data->index != 0)
           wait(NULL);
-    // while (i++ < data->words_count)
-         // wait(NULL);
-     //if (data->index != 0)
-       //   waitpid(data->pids[data->index - 1], NULL, 0);
      if  (head->type == WORD)
-     {
-          if (head->token->down != NULL)
-               data->flag = manage_redirections(head->token->down); //return 1 on error
-     }
+          data->flag = manage_redirections(head->token->down); //return 1 on error
      else if (head->type == REIDRECTION)
           data->flag = manage_redirections(head->token); 
      if (data->words_count != 1)
           close_and_dup2(data->fdx, data->index, data->words_count, data->flag);
-     if (args != NULL)
+     if (args != NULL && execve(cmd, args, data->envp) < 0)
      {
-          if (strcmp(args[0], "export") == 0)
-               built_in(1, data, head->token);
-          else
-          {
-               //write (1, "run exec cmd", 13);
-               if (execve(cmd, args, data->envp) < 0)
-               {
-                    perror("");
-                    ft_putstr_fd(2, cmd);
-               }
-          }
+          ft_putstr_fd(2, cmd);
+          write(1,": ", 2);
+          perror("");
      }
-     exit(0);
+     free_exec_args(args, cmd, head);
+     return (0);
 }
 
 char *get_file_name(char *location, size_t lent)
@@ -242,7 +226,7 @@ void here_doc(t_slice *slice)
                     break ;
                }
 		     write(fd, str, ft_strlen(str));
-               write(fd, "\n", 1);// should it be \n'\0' test later
+               write(fd, "\n", 1);
 		     free(str);
           }
           close(fd);
@@ -297,78 +281,76 @@ int manage_redirections(t_token *redirection)
      return (flag);
 }
 
-int execute_cmd(t_tree *head, int index, int len, t_data *data)
+int set_exec_args(t_tree *head, t_data *data, char ***args, char **cmd)
 {
-     char **args;
-     char *cmd;
-     int i = 0;
      data->flag = 0;
-     data->index = index;
      if (head->type == REIDRECTION)
      {
-          args = NULL;
-          cmd = NULL;
+          *args = NULL;
+          *cmd = NULL;
      }
      else
      {
-          args = get_word_args(head);
-          if (!args)
+          *args = get_word_args(head);
+          if (!*args)
                perror("args");
-          cmd = get_path(data->env, args[0]);
+          *cmd = get_path(data->env, *args[0]);
      }
-     if (index == len - 1 || len == 1) /* change inside the child ? this will affect all
-          //subsequent procces..  this was only for first and last command*/
-     {
+     return (0);  
+}
 
-          return (run_cmd_main(args, cmd, head, data));
-     }
-     data->pids[index] = fork();
-     if (data->pids[index] == 0)
-     {
-          //printf("running cmd %s on process[%d] and index %d\n", cmd, getpid(), index);
-          if  (head->type == WORD)
-          {
-               if (head->token->down != NULL)
-                    data->flag = manage_redirections(head->token->down);
-          }
-          /*what if onnly heredoc with no program name*/
-          else if (head->type == REIDRECTION)
-               data->flag = manage_redirections(head->token);
+// redirect wait pid close and dup
+int init_exec_check(t_tree *head, t_data *data, int index)
+{
+     int i;
+
+     i = 0;
+     if  (head->type == WORD)
+          data->flag = manage_redirections(head->token->down);/*removed protect condition*/
+     else if (head->type == REIDRECTION)
+          data->flag = manage_redirections(head->token);
           if (index != 0)
           {
                while (i <= index - 1)
                waitpid(data->pids[i++], NULL, 0);
           }
           close_and_dup2(data->fdx, index, data->words_count, data->flag);
-          if (args != NULL)
-          {
-               if (strcmp(args[0], "export") == 0)
-               {
-                    write(1, "multiple called builtin\n", 25);
-                    built_in(1, data, head->token);
-               }
-               else
-               {
-                    //write(1, "execve run", 11);
-                    if (execve(cmd, args, data->envp) < 0)
-                    {
-                         perror("");
-                         ft_putstr_fd(2, cmd);
-                    }
-               }
-          }
-          exit(0);
-     }
-     else
-     {
-          if (args)
-               free_2d_str(args);
-          if (cmd)
-               free(cmd);
-          free_tokens(head);
+     return (0);
+}
+
+void free_exec_args(char **args, char *cmd, t_tree *head)
+{
+     if (args)
+          free_2d_str(args);
+     if (cmd)
+          free(cmd);
+     free_tokens(head);
           free(head);
-          return (0);
+}
+int execute_cmd(t_tree *head, int index, int len, t_data *data)
+{
+     char **args;
+     char *cmd;
+
+     data->index = index;
+     set_exec_args(head, data, &args, &cmd);
+     if (index == len - 1 || len == 1)
+          return (run_cmd_main(args, cmd, head, data));
+     data->pids[index] = fork();
+     if (data->pids[index] == 0)
+     {
+          init_exec_check(head, data, index);
+          if (args && execve(cmd, args, data->envp) < 0) // short circuit evaluation
+          {
+               ft_putstr_fd(2, cmd);
+               write(1,": ", 2);
+               perror("");
+          }
+          free_exec_args(args, cmd, head);
+          exit(EXIT_FAILURE);
      }
+     free_exec_args(args, cmd, head);
+     return (0);
 }
 
 void run_cmd(t_tree **head, int index, int len, t_data *data)
