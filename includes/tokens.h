@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "minishell.h"
 #include <string.h>
+#include <stdbool.h>
+
 typedef enum s_token_type{
     ERROR = 0,
     WORD = 1,
@@ -30,6 +32,7 @@ typedef enum s_token_type{
 typedef struct s_slice{
     char *location;
     size_t lenght;
+    bool is_malloced;
 }t_slice;
 
 typedef struct s_token{
@@ -64,6 +67,8 @@ typedef struct s_data{
     int **fdx;
     t_lst *env_lst;
     t_lst *mem_ref;
+    char **str;
+    char *start;
     int index;
     int len;
     int flag;

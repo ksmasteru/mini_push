@@ -32,6 +32,7 @@ int parse_cmd(char *line, char **envp, t_data *data)
     data->flag = 0;
     tokens = lexer(line, data->env_lst);
 	tokens_v2(&tokens, data);
+    test_tokens(tokens);
     root = parser(tokens, data);
     if (access(".tmp.txt", F_OK))
         unlink(".tmp.txt");

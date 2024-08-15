@@ -29,7 +29,7 @@ void words_lexer(t_token **head, char **str, char *start, t_lst *env_lst)
 {
     size_t length;
     int word;
-    char *new_word;
+    char *new_word; 
 
     word = 0;
     length = 0;
@@ -83,7 +83,7 @@ t_token *make_new_node(t_token_type type, char *start, size_t length)
     if (!new)
         return (NULL);
     new->type = type;
-    new->location = (t_slice){start, length};
+    new->location = (t_slice){start, length, false};
     new->next = NULL;
 	new->up = NULL;
     new->down = NULL;
@@ -123,6 +123,8 @@ void test_tokens(t_token *tmp)
     {
         holder = tmp;
         printf(" parent type %d\n", tmp->type);
+        if (tmp->location.is_malloced)
+            printf("yes");
         if (tmp->down)
         {
             printf("  down is %d\n", tmp->down->type);
