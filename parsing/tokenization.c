@@ -25,6 +25,16 @@ t_token_type decode_type(char *start)
         return (WORD);
 }
 
+void set_alloc_flag(t_token **head)
+{
+    t_token *tmp;
+    t_token *holder;
+
+    tmp = *head;
+    while (tmp->next)
+        tmp = tmp->next;
+    tmp->location.is_malloced = true;
+}
 void words_lexer(t_token **head, char **str, char *start, t_lst *env_lst)
 {
     size_t length;
@@ -43,6 +53,7 @@ void words_lexer(t_token **head, char **str, char *start, t_lst *env_lst)
             else
                 new_word = qouted_word(str, start, env_lst);
             add_new_token(head, str, new_word, strlen(new_word));
+            set_alloc_flag(head);
             continue;
         }
         word = 1;

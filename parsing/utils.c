@@ -125,7 +125,6 @@ void free_ls(t_token **token, int direction)
      t_token *holder;
 
      tmp = *token;
-     printf("token location is %s\n", tmp->location.location);
      while (tmp)
      {
         if (direction == 1)
@@ -135,10 +134,7 @@ void free_ls(t_token **token, int direction)
         else
             holder = tmp->down;
         if (tmp->location.is_malloced)
-        {
-            printf("freed malloced\n");
             free(tmp->location.location);
-        }
         free(tmp);
         tmp = holder;
      }

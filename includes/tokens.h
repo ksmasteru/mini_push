@@ -67,8 +67,6 @@ typedef struct s_data{
     int **fdx;
     t_lst *env_lst;
     t_lst *mem_ref;
-    char **str;
-    char *start;
     int index;
     int len;
     int flag;
