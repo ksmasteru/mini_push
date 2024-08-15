@@ -37,7 +37,6 @@ char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst)
 
 /*
 * adnnan$toExpand ----> before+EXPANDED
-*   changed ft_strjoin to free  s1 and s2 
 */
 char *expand_word(char **str, char *start, t_lst *env_lst
 ,char closing_quotes)
@@ -46,7 +45,6 @@ char *expand_word(char **str, char *start, t_lst *env_lst
     char *expanded_word;
     char *whole_word;
     char c;
-
     whole_word = NULL;
     before_word = word_till_dollar(str, start);//adnan
     expanded_word = expantion(str, env_lst);//hicham
@@ -80,6 +78,7 @@ char *close_expanded_word(char *whole_word, char **str)
     }
     return (ft_strjoin(whole_word, quotes));
 }
+
 char *expantion(char **str, t_lst *env_lst)
 {
     int i;
@@ -121,6 +120,7 @@ char *expantion(char **str, t_lst *env_lst)
         *str = *str + 1;
     }
     expanded_word = get_expanded_word(expand_word, env_lst);//USER -->HICHAM
+    free(expand_word);
     return (expanded_word);
 }
 
