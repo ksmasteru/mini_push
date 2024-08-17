@@ -76,6 +76,7 @@ char *make_quoted_word(char **str, int c ,t_lst *env_lst)
             inside_quotes_word = expand_quoted_word(inside_quotes_word, env_lst);
             if (tmp)
                 free(tmp);
+            tmp = NULL;
         }
         whole_word = join_and_free(tmp, inside_quotes_word);
         tmp = whole_word;
