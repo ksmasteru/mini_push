@@ -30,10 +30,7 @@ char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst)
             else
                 expanded_word = before_word;
             whole_word = join_and_free(whole_word, expanded_word);
-            /*if (whole_word)
-                free(whole_word);
-            if (expanded_word)
-                free(expanded_word);*/
+            free(before_word);
             continue;
         }
         *str = *str + 1;
@@ -59,7 +56,7 @@ char *expand_word(char **str, char *start, t_lst *env_lst
     //whole_word = ft_strjoin(before_word, expanded_word);//adnanhicham
     /*if (before_word)
         free(before_word);
-    1if (expanded_word)
+    if (expanded_word)
         free(expanded_word);*/
     if (**str != 0 && **str != 32 && !(**str >= 9 && **str <= 13))//tokens
         return (after_dollar_word(str, whole_word, env_lst));
