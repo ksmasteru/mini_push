@@ -54,7 +54,11 @@ void words_lexer(t_token **head, char **str, char *start, t_lst *env_lst)
             else
                 new_word = qouted_word(str, start, env_lst);
             add_new_token(head, str, new_word, strlen(new_word));
-            set_alloc_flag(head);
+            if (new_word)
+            {
+                printf("allocated %s [%p]\n", new_word, new_word);
+                set_alloc_flag(head);
+            }
             continue;
         }
         word = 1;

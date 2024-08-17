@@ -11,13 +11,14 @@ char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst)
     char *before_word;
     char *expanded_word;
     int c;
-    char *res;
 
+    //printf("before after dollar word is %s and str poins to %s\n", whole_word, *str);
     while (**str != 0 && **str != 32 && !(**str >= 9 && **str <= 13))
     {
         if (**str == '$')
         {
-            whole_word = join_and_free(whole_word, expantion(str, env_lst));            
+            whole_word = join_and_free(whole_word, expantion(str, env_lst));
+            //printf("after expation whole word is %s\n", whole_word);     
             continue;
         }
         if (**str == 34 || **str == 39)
@@ -28,16 +29,17 @@ char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst)
                 expanded_word = expand_quoted_word(before_word, env_lst);
             else
                 expanded_word = before_word;
-            res = ft_strjoin(whole_word, expanded_word);
-            if (whole_word)
+            whole_word = join_and_free(whole_word, expanded_word);
+            /*if (whole_word)
                 free(whole_word);
             if (expanded_word)
-                free(expanded_word);
+                free(expanded_word);*/
             continue;
         }
         *str = *str + 1;
     }
-    return (res);
+    //printf("res from after dollar word is %s\n", whole_word);
+    return (whole_word);
 }
 
 /*
