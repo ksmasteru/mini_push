@@ -35,6 +35,7 @@ void set_alloc_flag(t_token **head)
         tmp = tmp->next;
     tmp->location.is_malloced = true;
 }
+
 void words_lexer(t_token **head, char **str, char *start, t_lst *env_lst)
 {
     size_t length;

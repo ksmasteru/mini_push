@@ -84,5 +84,5 @@ char *ft_strcat(char *str, char c);
 char *get_expanded_word(char *expand_word, t_lst *env_lst);
 void free_2d_str(char **str);
 void _free_data(t_data *data);
-
+char* join_and_free(char *s1, char *s2);
 #endif

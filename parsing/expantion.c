@@ -4,19 +4,20 @@
 #include "../includes/executer.h"
 #include "math.h"
 
-
+// 
 // expanded the afterdollar string and joins it to whole_word
 char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst)
 {
     char *before_word;
     char *expanded_word;
     int c;
+    char *res;
 
     while (**str != 0 && **str != 32 && !(**str >= 9 && **str <= 13))
     {
         if (**str == '$')
         {
-            whole_word = ft_strjoin(whole_word, expantion(str, env_lst));            
+            whole_word = join_and_free(whole_word, expantion(str, env_lst));            
             continue;
         }
         if (**str == 34 || **str == 39)
@@ -27,12 +28,16 @@ char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst)
                 expanded_word = expand_quoted_word(before_word, env_lst);
             else
                 expanded_word = before_word;
-            whole_word = ft_strjoin(whole_word, expanded_word);
+            res = ft_strjoin(whole_word, expanded_word);
+            if (whole_word)
+                free(whole_word);
+            if (expanded_word)
+                free(expanded_word);
             continue;
         }
         *str = *str + 1;
     }
-    return (whole_word);
+    return (res);
 }
 
 /*
@@ -48,11 +53,12 @@ char *expand_word(char **str, char *start, t_lst *env_lst
     whole_word = NULL;
     before_word = word_till_dollar(str, start);//adnan
     expanded_word = expantion(str, env_lst);//hicham
-    whole_word = ft_strjoin(before_word, expanded_word);//adnanhicham
-    if (before_word)
+    whole_word = join_and_free(before_word, expanded_word);
+    //whole_word = ft_strjoin(before_word, expanded_word);//adnanhicham
+    /*if (before_word)
         free(before_word);
-    if (expanded_word)
-        free(expanded_word);
+    1if (expanded_word)
+        free(expanded_word);*/
     if (**str != 0 && **str != 32 && !(**str >= 9 && **str <= 13))//tokens
         return (after_dollar_word(str, whole_word, env_lst));
     return (whole_word);//this wasnt added.
@@ -120,7 +126,6 @@ char *expantion(char **str, t_lst *env_lst)
         *str = *str + 1;
     }
     expanded_word = get_expanded_word(expand_word, env_lst);//USER -->HICHAM
-    free(expand_word);
     return (expanded_word);
 }
 
@@ -139,13 +144,18 @@ char *get_expanded_word(char *expand_word, t_lst *env_lst)
                 expanded_word = (char *)malloc(sizeof(char) * strlen(env_lst->value->data) + 1);
                 expanded_word[strlen(env_lst->value->data)] = '\0';
                 expanded_word = strncpy(expanded_word, env_lst->value->data, strlen(env_lst->value->data));
+                free(expand_word);
                 return (expanded_word);
             }
             else
+            {
+                free(expand_word);
                 return (NULL);
+            }
         }
         env_lst = env_lst->next;
     }
+    free(expand_word);
     return (NULL);
 }
 

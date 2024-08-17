@@ -11,6 +11,7 @@
 // tokens arent freed  in builtns
 void show_env(t_data *data, int is_export);
 void built_in(int op, t_data *data, t_token *token);
+
 bool is_empty(char *line)
 {
 	int i;
@@ -53,6 +54,7 @@ void export_cmd(int op, char *line, t_data *data)
 	tokens_v2(&tokens, data);
 	built_in(op, data, tokens);
 }
+
 int check_builtin2(char *line, t_data *data)
 {
 	t_token *tokens;
@@ -138,7 +140,7 @@ int main(int ac, char **av, char **envp)
 {
 	char *line;
 	int pid;
-	int i = 0;
+
 	t_data data;
 	set_data_variables(&data, envp);
 	while (1)

@@ -54,6 +54,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		s2_lent;
 	char	*str;
 
+	if (s1 == NULL && s2 == NULL)
+		return (NULL);
 	if (s1 == NULL)
 		return (ft_strdup2(s2));
 	if (s2 == NULL)

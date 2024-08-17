@@ -35,26 +35,54 @@ char *inside_quoted_word(char **str ,int c)
 *   "expanded_word"'Nonexpandedword'expandedword
 *
 */
+
+
+char* join_and_free(char *s1, char *s2)
+{
+    char *res;
+
+    res = ft_strjoin(s1, s2);
+    if (s1)
+        free(s1);
+    if (s2)
+        free(s2);
+    return res;
+}
+
 char *make_quoted_word(char **str, int c ,t_lst *env_lst)
 {
     char *whole_word = NULL;
     char *inside_quotes_word;
     char *outside_quotes_word;
+    char *tmp = NULL;
+    //printf("str value is %d\n", **str);
+    //printf("before loop str points to %s\n", *str); //"HELLO"ls'a'
+    
     while (**str == 34 || **str == 39)
     {
         c = **str;
         inside_quotes_word = inside_quoted_word(str, **str);
-        if (c == 34 && strchr(inside_quotes_word, '$'))
-            inside_quotes_word = expand_quoted_word(inside_quotes_word, env_lst);
         inside_quotes_word = clean_quotes_from_word(inside_quotes_word, ft_strlen(inside_quotes_word), c);
-        whole_word = ft_strjoin(whole_word, inside_quotes_word);
+        //printf("inside quotes word %s is\n", inside_quotes_word);
+        if (c == 34 && strchr(inside_quotes_word, '$'))
+        {
+            tmp = inside_quotes_word;
+            inside_quotes_word = expand_quoted_word(inside_quotes_word, env_lst);
+            if (tmp)
+                free(tmp);
+        }
+        whole_word = join_and_free(tmp, inside_quotes_word);
+        tmp = whole_word;
     }
+    
+    //printf("after loop whole word is %s and str points to %s\n", whole_word, *str);  // a
+    
     if (strchr(" \v\t\r\n", **str) || **str == 0)
         return (whole_word);
     else if (strchr(*str, 34) || strchr(*str, 39))
-        return(ft_strjoin(whole_word, qouted_word(str, *str, env_lst)));
+        return(join_and_free(whole_word, qouted_word(str, *str, env_lst)));
     else
-        return (ft_strjoin(whole_word, word_till_space(str, env_lst)));
+        return (join_and_free(whole_word, word_till_space(str, env_lst)));
 }
 
 char *clean_quotes_from_word(char *quoted_word, int len, int qoute)
@@ -84,20 +112,34 @@ char *clean_quotes_from_word(char *quoted_word, int len, int qoute)
 // word"$USER"ggggg'ls' ---> wordhichamfgggggls; str doesnt always point to starting quote
 char *qouted_word(char **str, char *start, t_lst *env_lst)
 {
-    char *word_before_qoutes = word_till_quotes(start, env_lst);
+    char *word_before_qoutes;
+    char *complete_word;
+    char *qouted_word;
+
+    word_before_qoutes = word_till_quotes(start, env_lst);
     while (**str)
     {
         if (**str == 34 || **str == 39)
             break;
         *str = *str + 1;
     }
-    return (ft_strjoin(word_before_qoutes, make_quoted_word(str,  **str, env_lst))); 
+    qouted_word = make_quoted_word(str, **str, env_lst);
+    complete_word = join_and_free(word_before_qoutes, qouted_word);
+    /*complete_word = ft_strjoin(word_before_qoutes, qouted_word);
+    if (word_before_qoutes)
+        free(word_before_qoutes);
+    if(qouted_word)
+        free(qouted_word);*/
+    
+    return (complete_word); 
 }
 
 char *expand_quoted_word(char *str, t_lst *env_lst)
 {
     //printf("word to expand is %s\n", str);
     char *whole_word;
+    char *tmp;
+
     whole_word = NULL;
     if (!str)
         return (NULL);
@@ -105,14 +147,21 @@ char *expand_quoted_word(char *str, t_lst *env_lst)
     {
         if (*str == '$')
         {
-            whole_word = ft_strjoin(whole_word, expantion(&str, env_lst));
+            whole_word = join_and_free(whole_word, expantion(&str, env_lst));
             continue;
         }
         else
+        {
+            tmp = whole_word;
             whole_word = ft_strcat(whole_word, *str);
+            if (tmp)
+                free(tmp);
+        }
         str++;
     }
+    // free str if word is nnull;
     //printf("expanded word is %s\n", whole_word);
     return (whole_word);
 }
+
 
