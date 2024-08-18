@@ -54,7 +54,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		s2_lent;
 	char	*str;
 
-	printf("joining %p of value %s1 with %p\n", s1, s1, s2);
+	//printf("joining %p of value %s1 with %p\n", s1, s1, s2);
 	if (s1 == NULL && s2 == NULL)
 		return (NULL);
 	if (s1 == NULL)

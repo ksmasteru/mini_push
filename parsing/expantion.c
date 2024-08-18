@@ -113,7 +113,10 @@ char *expantion(char **str, t_lst *env_lst)
             i++;
     }
     if (i == 0)
-        return (NULL);
+    {
+        return (ft_strdup2("$"));
+        //return (NULL); updated :: if $ is alone it should be printed.
+    }
     len = i;
     //printf("str is %s len is %d\n", *str, len);
     expand_word = (char *)malloc(sizeof(char) * len + 1);
