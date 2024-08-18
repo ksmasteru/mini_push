@@ -36,6 +36,25 @@ void set_alloc_flag(t_token **head)
     tmp->location.is_malloced = true;
 }
 
+
+void split_add_to_env(char *new_word, t_token **head, char **str)
+{
+    int i;
+
+    i = 0;
+    char **splitted = ft_split(new_word, 32); //seoarators 32 9 13 redo this split
+    while (splitted[i])
+    {
+        printf("adding %s of address [%p]\n", splitted[i], splitted[i]);
+        add_new_token(head, str, splitted[i], strlen(splitted[i]));
+        set_alloc_flag(head);
+        i++;
+    }
+    free(new_word);
+    free(splitted[i]);
+    free(splitted);
+}
+
 void words_lexer(t_token **head, char **str, char *start, t_lst *env_lst)
 {
     size_t length;
@@ -50,14 +69,16 @@ void words_lexer(t_token **head, char **str, char *start, t_lst *env_lst)
         {
             word = 0;
             if (**str == '$')
-                new_word = expand_word(str, start, env_lst, 0);
-            else
-                new_word = qouted_word(str, start, env_lst);
-            add_new_token(head, str, new_word, strlen(new_word));
-            if (new_word)
             {
-                //printf("allocated %s [%p]\n", new_word, new_word);
-                set_alloc_flag(head);
+                new_word = expand_word(str, start, env_lst, 0); // "ls -la" if expand split
+                split_add_to_env(new_word, head, str);
+            }
+            else
+            {
+                new_word = qouted_word(str, start, env_lst);
+                add_new_token(head, str, new_word, strlen(new_word));
+                if (new_word)
+                    set_alloc_flag(head);
             }
             continue;
         }
@@ -110,7 +131,7 @@ void add_new_token(t_token **head , char **str, char *start, size_t length)
 {
     t_token *tmp;
     t_token *new;
-
+    //!! using str is not safe quoted case where | might be found
     if (start == NULL || str == NULL)
         return ;
     tmp = *head;

@@ -135,7 +135,7 @@ void free_ls(t_token **token, int direction)
             holder = tmp->down;
         if (tmp->location.is_malloced)
         {
-            // printf("trying to free %p\n", tmp->location.location);
+            printf("trying to free %s\n", tmp->location.location);
             free(tmp->location.location);
         }
         free(tmp);

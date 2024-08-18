@@ -29,7 +29,7 @@ char *after_dollar_word(char **str, char *whole_word, t_lst *env_lst)
                 expanded_word = expand_quoted_word(before_word, env_lst);
             else
                 expanded_word = before_word;
-            whole_word = join_and_free(whole_word, expanded_word);
+            whole_word = join_and_free(whole_word, expanded_word);    
             free(before_word);
             continue;
         }
