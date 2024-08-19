@@ -132,9 +132,34 @@ void set_data_variables(t_data *data, char **envp)
 	data->mem_ref = NULL;
 }
 
-void free_ref(t_data *data_ref);
+void free_data_variables(t_data *data)
+{
+	// free data->env_lst key data, value vadata
+	t_lst *tmp;
+	t_lst *holder;
+	int i;
 
-
+	i = 0;
+	tmp = data->env_lst;
+	while (tmp)
+	{
+		holder = tmp->next;
+		if (tmp->data)
+			free(tmp->data);
+		if (tmp->value)
+		{
+			if (tmp->value->data)
+				free(tmp->value->data);
+			free(tmp->value);
+		}
+		free(tmp);
+		tmp = holder;
+	}
+	while (data->env[i])
+		free(data->env[i++]);
+	free(data->env[i]);
+	free(data->env);
+}
 
 int main(int ac, char **av, char **envp)
 {
@@ -161,5 +186,6 @@ int main(int ac, char **av, char **envp)
 			waitpid(pid, NULL, 0);
 		free(line);
 	}
+	free_data_variables(&data);
 	return (0);
 }
