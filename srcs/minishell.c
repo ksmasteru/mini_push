@@ -19,13 +19,10 @@ bool is_empty(char *line)
 	i = 0;
 	if (line[0] == 0)
 		return (true);
-	while (line[i] == 32 ||  (line[i] >= 9 && line[i] <= 13))
+	while (line[i] && (line[i] == 32 ||  (line[i] >= 9 && line[i] <= 13)))
 		i++;
 	if (line[i] == 0 || line[i] == '\n')
-	{
-		free(line);
 		return (true);
-	}
 	return (false);
 }
 
@@ -38,7 +35,10 @@ char*	read_cmd()
 	if (!line)
 		exit(-1);
 	if (is_empty(line))
+	{
+		free(line);
 		return (NULL);
+	}
 	if (access(".tmp.txt", F_OK) == 0)
 		unlink(".tmp.txt");
 	add_history(line);
@@ -98,15 +98,11 @@ int check_builtin2(char *line, t_data *data)
 /*frees the line after running the builting command.*/
 int check_builtin(char *line, t_data *data)
 {
-	if (line[0] == 'c' && line[1] == 'd' && line[2] == 32)
+	if (line[0] == 'c' && line[1] == 'd' && (line[2] == 32 || (line[2] >= 9 && line[2] <= 13) || line[2] == 0))
 	{
-		line[ft_strlen(line)] = '\0';
-		if (chdir(line + 3) < 0)
-			perror("chdir");
-		{
-			free(line);
-			return (1);
-		}
+		cd (line + 2, data);// "cd home" // skip spaces at the start
+		free(line);
+		return (1);
 	}
 	if (ft_strlen(line) >= 6)
 	{

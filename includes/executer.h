@@ -37,4 +37,11 @@ void free_exec_args(char **args, char *cmd, t_tree *head);
 void free_data_variables(t_data *data);
 void free_all_tokens(t_token **tokens);
 void free_ls_2(t_token *token, int direction);
+char *get_home_path(t_data *data);
+int	ft_exit(char **status);
+void	exit_empty(char **status, unsigned long long int n, int i);
+int	check_argtwo(char *status);
+int	count_args(char **status);
+int cd(char *path, t_data *data);
+int	ft_atoi(const char *str);
 #endif
