@@ -33,7 +33,7 @@ void ft_echo2(t_data *data, char *line)
         if (tmp)
             write (1, " ", 1);
     }
-    free_ls(&(tokens), 2);
+    free_all_tokens(&tokens);
 }
 
 bool check_echo_n(t_token *tmp)

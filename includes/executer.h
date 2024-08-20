@@ -35,4 +35,6 @@ bool check_echo_n(t_token *tmp);
 int set_exec_args(t_tree *head, t_data *data, char ***args, char **cmd);
 void free_exec_args(char **args, char *cmd, t_tree *head);
 void free_data_variables(t_data *data);
+void free_all_tokens(t_token **tokens);
+void free_ls_2(t_token *token, int direction);
 #endif

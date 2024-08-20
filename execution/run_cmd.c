@@ -165,14 +165,20 @@ int run_cmd_main(char **args, char *cmd, t_tree *head, t_data *data)
           data->flag = manage_redirections(head->token); 
      if (data->words_count != 1)
           close_and_dup2(data->fdx, data->index, data->words_count, data->flag);
+     // free()
+     free(data->line);
+     free_all_tokens(&(data->tokens));
+     free(head);
+     head = NULL;
      if (args != NULL && execve(cmd, args, data->envp) < 0)
      {
           ft_putstr_fd(2, cmd);
           write(1,": ", 2);
           perror("");
      }
+     free_data_variables(data);
      free_exec_args(args, cmd, head);
-     return (0);
+     exit(0);
 }
 
 char *get_file_name(char *location, size_t lent)
@@ -324,7 +330,7 @@ void free_exec_args(char **args, char *cmd, t_tree *head)
           free_2d_str(args);
      if (cmd)
           free(cmd);
-     free_tokens(head);
+     if (head)
           free(head);
 }
 int execute_cmd(t_tree *head, int index, int len, t_data *data)
@@ -337,16 +343,16 @@ int execute_cmd(t_tree *head, int index, int len, t_data *data)
      if (index == len - 1 || len == 1)
           return (run_cmd_main(args, cmd, head, data));
      data->pids[index] = fork();
-     if (data->pids[index] == 0)
+     if (data->pids[index] == 0) /*free tokens tree here ?*/
      {
-          init_exec_check(head, data, index);
+          init_exec_check(head, data, index); 
           if (args && execve(cmd, args, data->envp) < 0) // short circuit evaluation
           {
                ft_putstr_fd(2, cmd);
                write(1,": ", 2);
                perror("");
           }
-          free_exec_args(args, cmd, head);
+          free_exec_args(args, cmd, head);//free tokens ?
           exit(EXIT_FAILURE);
      }
      free_exec_args(args, cmd, head);
@@ -368,6 +374,5 @@ void run_cmd(t_tree **head, int index, int len, t_data *data)
      else
      {
           execute_cmd((*head)->right, index, len,data);
-         // waitpid(data->pids[index], NULL, 0);
      }
 }

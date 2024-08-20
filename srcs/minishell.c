@@ -53,6 +53,7 @@ void export_cmd(int op, char *line, t_data *data)
 	tokens = lexer(line, data->env_lst);
 	tokens_v2(&tokens, data);
 	built_in(op, data, tokens);
+	free_all_tokens(&tokens);
 }
 
 int check_builtin2(char *line, t_data *data)
@@ -134,7 +135,6 @@ void set_data_variables(t_data *data, char **envp)
 
 void free_data_variables(t_data *data)
 {
-	// free data->env_lst key data, value vadata
 	t_lst *tmp;
 	t_lst *holder;
 	int i;
@@ -166,6 +166,7 @@ int main(int ac, char **av, char **envp)
 	char *line;
 	int pid;
 
+	line = NULL;
 	t_data data;
 	set_data_variables(&data, envp);
 	while (1)
@@ -186,6 +187,8 @@ int main(int ac, char **av, char **envp)
 			waitpid(pid, NULL, 0);
 		free(line);
 	}
+	if (line)
+		free(line);
 	free_data_variables(&data);
 	return (0);
 }

@@ -63,12 +63,14 @@ typedef struct s_queue{
 
 typedef struct s_data{
     char *str;
+    t_token *tokens;
     t_tree **head;
     int **fdx;
     t_lst *env_lst;
     t_lst *mem_ref;
     int index;
     int len;
+    char *line;
     int flag;
     int words_count;
     int pipes_count;

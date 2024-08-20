@@ -144,6 +144,26 @@ void free_ls(t_token **token, int direction)
      *token = NULL;
 }
 
+// up or down token should be passed not the parent
+void free_ls_2(t_token *token, int direction)
+{
+    t_token *tmp;
+    t_token *holder;
+
+    tmp = token;
+    while (tmp)
+    {
+        if (direction == 1)
+            holder = tmp->up;
+        else if (direction == 2)
+            holder = tmp->down;
+        if (tmp->location.is_malloced)
+            free(tmp->location.location);
+        free(tmp);
+        tmp = holder;
+    }
+}
+
 void free_tokens(t_tree *tree)
 {
      if (tree->token)
@@ -153,7 +173,8 @@ void free_tokens(t_tree *tree)
      }
 }
 
-void _free_data(t_data *data)
+/*frees pipes pids*/
+void _free_data(t_data *data) 
 {
     int i;
 
