@@ -136,7 +136,11 @@ int cd(char *path, t_data *data)
 		if (tokens->type == WORD)
 		{
 			if (tokens->up && tokens->up->up)
-				return (cd_error("too many args\n", tokens));// wrong error
+			{
+				write(2, "cd: too many arguments\n", 24);
+				free_all_tokens(&tokens);
+				return (1);
+			}
 			tokens->up->location.location[tokens->up->location.lenght] = 0;
 			if (chdir(tokens->up->location.location) < 0)
 				return (cd_error(path + i, tokens));
