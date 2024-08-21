@@ -217,6 +217,7 @@ void	exit_empty(char **status, unsigned long long int n, int i)
 			i++;
 		}
 		write(1, ": numeric argument required\n", 28);
+		free_2d_str(status);
 		exit(2);
 	}
 	else
@@ -224,10 +225,14 @@ void	exit_empty(char **status, unsigned long long int n, int i)
 		n = ft_atoi(status[1]);
 		write(1, "exit\n", 5);
 		if (n < 256 && n >= 0)
+		{
+			free_2d_str(status);
 			exit(n);
+		}
 		else if (n > 255)
 		{
 			c = n;
+			free_2d_str(status);
 			exit(c);
 		}
 	}
@@ -261,18 +266,25 @@ int	ft_atoi(const char *str)
 	return (sign * result);
 }
 
-int	ft_exit(char **status)
+int	ft_exit(char *line)
 {
 	int	i;
+	char **status;
+	int code;
 
-	i = 0;
+	code = 0;
+	i = 0;	
+	status = ft_split(line, 32);
 	if (count_args(status) == 0)
 	{
 		write(1, "exit\n", 5);
-		exit(0);
+		code = 0;
 	}
 	else if (count_args(status) == 1)
+	{
+		free(line);
 		exit_empty(status, 0, 0);
+	}
 	else
 	{
 		if (check_argtwo(status[1]) == 1)
@@ -281,10 +293,12 @@ int	ft_exit(char **status)
 			while (status[1][i])
 				write(1, &status[1][i++], 1);
 			write(1, ": numeric argument required\n", 28);
-			exit(2);
+			code = 2;
 		}
 		else
 			write(1, "minishell: exit: too many arguments\n", 36);
 	}
-	return (0);
+	free(line);
+	free_2d_str(status);
+	exit(code);
 }

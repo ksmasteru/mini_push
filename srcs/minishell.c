@@ -59,7 +59,6 @@ void export_cmd(int op, char *line, t_data *data)
 int check_builtin2(char *line, t_data *data)
 {
 	t_token *tokens;
-
 	if (ft_strlen(line) >= 5)
 	{
 		if (strncmp("unset", line, 5) == 0 && (line[5] == 32 || line[5] == 0))
@@ -69,6 +68,7 @@ int check_builtin2(char *line, t_data *data)
 			return (1);
 		}
 	}
+
 	if (ft_strlen(line) >= 3)
 	{
 		if (strncmp("env", line, 3) == 0 && (line[3] == 32 || line[3] == 0))
@@ -78,14 +78,15 @@ int check_builtin2(char *line, t_data *data)
 			return (1);
 		}
 	}
-	if (strcmp(line, "exit") == 0)
+
+	if (ft_strlen(line) >= 4)
 	{
-		free(line);
-		exit(0);
+		if (strncmp("exit", line,  4) == 0  && (line[4] == 32 || line[4] == 0)) // or tab
+			ft_exit(line);
 	}
 	if (ft_strlen(line) >= 4)
 	{
-		if (strncmp("echo", line, 4) == 0 && (line[4] == 32 || line[3] == 0))
+		if (strncmp("echo", line, 4) == 0 && (line[4] == 32 || line[4] == 0))
 		{
 			ft_echo2(data, line);
 			free(line);
