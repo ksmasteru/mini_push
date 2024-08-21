@@ -23,7 +23,7 @@
 int	pwd(char *cmd)
 {
 	int	i;
-
+	char *wd;
 	i = 0;
 	while (cmd[i])
 	{
@@ -37,11 +37,16 @@ int	pwd(char *cmd)
 				i++;
 			}
 			printf(": invalid option\n");
+			free(cmd);
 			return (1);
 		}
 		i++;
 	}
-	printf("%s\n", getcwd(0, 0));
+	wd = getcwd(0, 0);
+	printf("%s\n", wd);
+	if (wd)
+		free(wd);
+	free(cmd);
 	return (0);
 }
 
@@ -49,14 +54,6 @@ int	cd_error(char *path, t_token *tokens);
 
 char *get_home_path(t_data *data)
 {
-	/*
-	typedef struct s_lst
-{
-  char *data;
-  struct s_lst *next;
-  struct s_lst *value;
-	}t_lst;
-*/
 	char *home_path;
 	t_lst *tmp = data->env_lst;
 	int found = 0;

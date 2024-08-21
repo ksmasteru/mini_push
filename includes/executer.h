@@ -44,4 +44,5 @@ int	check_argtwo(char *status);
 int	count_args(char **status);
 int cd(char *path, t_data *data);
 int	ft_atoi(const char *str);
+int	pwd(char *cmd);
 #endif

@@ -45,7 +45,6 @@ char*	read_cmd()
 	return (line);
 }
 
-
 void export_cmd(int op, char *line, t_data *data)
 {
 	t_token *tokens;
@@ -77,6 +76,11 @@ int check_builtin2(char *line, t_data *data)
 			free(line);
 			return (1);
 		}
+		if (strncmp("pwd", line, 3) == 0 && (line[3] == 32 || line[3] == 0))
+		{
+			pwd(line);
+			return (1);
+		}
 	}
 
 	if (ft_strlen(line) >= 4)
@@ -84,6 +88,7 @@ int check_builtin2(char *line, t_data *data)
 		if (strncmp("exit", line,  4) == 0  && (line[4] == 32 || line[4] == 0)) // or tab
 			ft_exit(line);
 	}
+
 	if (ft_strlen(line) >= 4)
 	{
 		if (strncmp("echo", line, 4) == 0 && (line[4] == 32 || line[4] == 0))
@@ -93,6 +98,7 @@ int check_builtin2(char *line, t_data *data)
 			return (1);
 		}
 	}
+
 	return (0);
 }
 

@@ -3,6 +3,7 @@
         "executer.h": "c",
         "parser.h": "c",
         "stdlib.h": "c",
-        "tokens.h": "c"
+        "tokens.h": "c",
+        "dirent.h": "c"
     }
 }
