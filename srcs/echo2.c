@@ -13,8 +13,9 @@ void ft_echo2(t_data *data, char *line)
     t_token *tmp;
     bool n;
 
-    tokens = lexer(line, data->env_lst);
-	tokens_v2(&tokens, data);
+    //tokens = lexer(line, data->env_lst);
+	//tokens_v2(&tokens, data);
+    tokens = data->tokens;
     tmp = tokens->up;
     if (!tmp)
         return ;
@@ -33,7 +34,7 @@ void ft_echo2(t_data *data, char *line)
         if (tmp)
             write (1, " ", 1);
     }
-    free_all_tokens(&tokens);
+    //free_all_tokens(&tokens);
 }
 
 bool check_echo_n(t_token *tmp)

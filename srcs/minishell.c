@@ -45,84 +45,71 @@ char*	read_cmd()
 	return (line);
 }
 
-void export_cmd(int op, char *line, t_data *data)
+// export 1 unset 2 env 3 pwd 4 cd 5 echo 6 exit 7
+int built_in_code(char *line)
 {
-	t_token *tokens;
-
-	tokens = lexer(line, data->env_lst);
-	tokens_v2(&tokens, data);
-	built_in(op, data, tokens);
-	free_all_tokens(&tokens);
-}
-
-int check_builtin2(char *line, t_data *data)
-{
-	t_token *tokens;
+	if (ft_strlen(line) >= 6)
+	{
+		if (strncmp("export", line, 6) == 0 && (strchr(" \v\t\n", line[6]) || line[6] == 0))
+			return (1);
+	}
 	if (ft_strlen(line) >= 5)
 	{
-		if (strncmp("unset", line, 5) == 0 && (line[5] == 32 || line[5] == 0))
-		{
-			export_cmd(2, line, data);
-			free(line);
-			return (1);
-		}
+		if (strncmp("unset", line, 5) == 0 && (strchr(" \v\t\n", line[5]) || line[5] == 0))
+			return (2);
 	}
-
+	if (ft_strlen(line) >= 4)
+	{
+		if (strncmp("echo", line, 4) == 0 && (strchr(" \v\t\n", line[4]) || line[4] == 0))
+			return (6);
+		if (strncmp("exit", line, 4) == 0 && (strchr(" \v\t\n", line[4]) || line[4] == 0))
+			return (7);
+	}
 	if (ft_strlen(line) >= 3)
 	{
-		if (strncmp("env", line, 3) == 0 && (line[3] == 32 || line[3] == 0))
-		{
-			show_env(data, 0);
-			free(line);
-			return (1);
-		}
-		if (strncmp("pwd", line, 3) == 0 && (line[3] == 32 || line[3] == 0))
-		{
-			pwd(line);
-			return (1);
-		}
+		if (strncmp("env", line, 3) == 0 && (strchr(" \v\t\n", line[3]) || line[3] == 0))
+			return (3);
+		if (strncmp("pwd", line, 3) == 0 && (strchr(" \v\t\n", line[3]) || line[3] == 0))
+			return (4);
 	}
-
-	if (ft_strlen(line) >= 4)
+	if (ft_strlen(line) >= 2)
 	{
-		if (strncmp("exit", line,  4) == 0  && (line[4] == 32 || line[4] == 0)) // or tab
-			ft_exit(line);
+		if (strncmp("cd", line, 2) == 0 && (strchr(" \v\t\n", line[2]) || line[2] == 0))
+			return (5);
 	}
-
-	if (ft_strlen(line) >= 4)
-	{
-		if (strncmp("echo", line, 4) == 0 && (line[4] == 32 || line[4] == 0))
-		{
-			ft_echo2(data, line);
-			free(line);
-			return (1);
-		}
-	}
-
 	return (0);
 }
 
 /*frees the line after running the builting command.*/
 int check_builtin(char *line, t_data *data)
 {
-	if (line[0] == 'c' && line[1] == 'd' && (line[2] == 32 || (line[2] >= 9 && line[2] <= 13) || line[2] == 0))
-	{
-		cd (line, data);// "cd home" // skip spaces at the start
-		free(line);
-		return (1);
-	}
-	if (ft_strlen(line) >= 6)
-	{
-		if (strncmp("export", line, 6) == 0 && (line[6] == 32 || line[6] == 0))
-		{
-			export_cmd(1, line, data);
-			{
-				free(line);
-				return (1);
-			}
-		}
-	}
-	return (check_builtin2(line, data));
+	// return tvalue of builts for exit code ?
+	int n;
+	
+	n = built_in_code(line);
+	if (n == 0)
+		return (0);
+	data->tokens = NULL;
+	if (n < 7)
+		data->tokens = lexer(line, data->env_lst);
+	tokens_v2(&data->tokens, data);
+	if (n == 1)
+		export(data, data->tokens);//safe
+	if (n == 2)
+		unset(data, data->tokens); // safe
+	if (n == 3)
+		env(data->env); // safe
+	if (n == 4)
+		pwd(line); // safe
+	if (n == 5)
+		cd(line, data); //safe !
+	if (n == 6)
+		ft_echo2(data, line); // safe !
+	if (n == 7)
+		ft_exit(line); // leaks double free?
+	free(line);
+	free_all_tokens(&data->tokens);
+	return (n);/*exit code*/
 }
 
 void set_data_variables(t_data *data, char **envp)

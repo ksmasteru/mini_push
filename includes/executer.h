@@ -45,4 +45,5 @@ int	count_args(char **status);
 int cd(char *path, t_data *data);
 int	ft_atoi(const char *str);
 int	pwd(char *cmd);
+void unset(t_data *data, t_token *token);
 #endif

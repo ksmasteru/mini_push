@@ -37,7 +37,6 @@ int	pwd(char *cmd)
 				i++;
 			}
 			printf(": invalid option\n");
-			free(cmd);
 			return (1);
 		}
 		i++;
@@ -46,7 +45,6 @@ int	pwd(char *cmd)
 	printf("%s\n", wd);
 	if (wd)
 		free(wd);
-	free(cmd);
 	return (0);
 }
 
@@ -117,33 +115,33 @@ int cd(char *path, t_data *data)
 	char *home;
 	int n;
 	int i;
-	t_token *tokens = lexer(path, data->env_lst);
-	tokens_v2(&tokens, data);
+	t_token *tokens = data->tokens;
 	i  =0;
 	home = get_home_path(data);
 	if (is_empty(path + 2) || is_special(path + 2))
-	{		
+	{
 		if (chdir(home) < 0)
 			return (cd_error(home, tokens));
-		free_all_tokens(&tokens);
+		//free_all_tokens(&tokens);
 		return (0);
 	}
 	else
 	{
-		if (tokens->type == WORD)
+		//if (tokens->type == WORD)
+		//{
+		if (tokens->up && tokens->up->up)
 		{
-			if (tokens->up && tokens->up->up)
-			{
-				write(2, "cd: too many arguments\n", 24);
-				free_all_tokens(&tokens);
-				return (1);
-			}
-			tokens->up->location.location[tokens->up->location.lenght] = 0;
-			if (chdir(tokens->up->location.location) < 0)
-				return (cd_error(path + i, tokens));
+			write(2, "cd: too many arguments\n", 24);
+			//free_all_tokens(&tokens);
+			return (1);
 		}
+		tokens->up->location.location[tokens->up->location.lenght] = 0;
+		printf("dir is %s\n",tokens->up->location.location);
+		if (chdir(tokens->up->location.location) < 0)
+			return (cd_error(path + i, tokens));
 	}
-	free_all_tokens(&tokens);
+	//}
+	//free_all_tokens(&tokens);
 	return 0;
 }
 
@@ -160,7 +158,7 @@ int	cd_error(char *path, t_token *tokens)
 	}
 	write(1, ": ", 2);
 	perror("");
-	free_all_tokens(&tokens);
+	//free_all_tokens(&tokens);
 	return (1);
 }
 
