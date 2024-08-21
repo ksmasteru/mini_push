@@ -100,7 +100,7 @@ int check_builtin(char *line, t_data *data)
 {
 	if (line[0] == 'c' && line[1] == 'd' && (line[2] == 32 || (line[2] >= 9 && line[2] <= 13) || line[2] == 0))
 	{
-		cd (line + 2, data);// "cd home" // skip spaces at the start
+		cd (line, data);// "cd home" // skip spaces at the start
 		free(line);
 		return (1);
 	}

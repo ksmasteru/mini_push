@@ -37,6 +37,8 @@ void tokens_v2(t_token **tokens, t_data *data)
     t_token *new;
     t_token *tmp;
 
+    if (*tokens == NULL)
+        return ;
     tmp = *tokens;
     while (tmp)
     {

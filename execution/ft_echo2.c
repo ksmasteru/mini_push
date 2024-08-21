@@ -44,7 +44,8 @@ int	pwd(char *cmd)
 	printf("%s\n", getcwd(0, 0));
 	return (0);
 }
-int		cd_error(char *path);
+
+int	cd_error(char *path, t_token *tokens);
 
 char *get_home_path(t_data *data)
 {
@@ -73,6 +74,7 @@ char *get_home_path(t_data *data)
 	else
 	{
 		printf("home path not found\n");
+		return NULL;
 	}
 }
 
@@ -111,33 +113,40 @@ bool is_special(char *path)
 	return (false);
 
 }
-// cd         
-// cd ~
+// cd
+// path = line.
 int cd(char *path, t_data *data)
 {
 	char *home;
 	int n;
 	int i;
-
+	t_token *tokens = lexer(path, data->env_lst);
+	tokens_v2(&tokens, data);
 	i  =0;
 	home = get_home_path(data);
-	if (is_empty(path) || is_special(path))
+	if (is_empty(path + 2) || is_special(path + 2))
 	{		
 		if (chdir(home) < 0)
-			return (cd_error(home));
+			return (cd_error(home, tokens));
+		free_all_tokens(&tokens);
+		return (0);
 	}
 	else
 	{
-		while (path[i] == 32 || path[i] >= 9 && path[i] <= 13)
-			i++;
-		if (chdir(path + i) < 0)
-			return (cd_error(path + i));
-		
+		if (tokens->type == WORD)
+		{
+			if (tokens->up && tokens->up->up)
+				return (cd_error("too many args\n", tokens));// wrong error
+			tokens->up->location.location[tokens->up->location.lenght] = 0;
+			if (chdir(tokens->up->location.location) < 0)
+				return (cd_error(path + i, tokens));
+		}
 	}
+	free_all_tokens(&tokens);
 	return 0;
 }
 
-int	cd_error(char *path)
+int	cd_error(char *path, t_token *tokens)
 {
 	int	i;
 
@@ -150,6 +159,7 @@ int	cd_error(char *path)
 	}
 	write(1, ": ", 2);
 	perror("");
+	free_all_tokens(&tokens);
 	return (1);
 }
 
