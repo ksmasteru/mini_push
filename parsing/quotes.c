@@ -63,21 +63,24 @@ char *make_quoted_word(char **str, int c ,t_lst *env_lst)
     char *tmp = NULL;
     //printf("str value is %d\n", **str);
     //printf("before loop str points to %s\n", *str); //"HELLO"ls'a'
-    
+    //
     while (**str == 34 || **str == 39)
     {
         c = **str;
         inside_quotes_word = inside_quoted_word(str, **str);
-        inside_quotes_word = clean_quotes_from_word(inside_quotes_word, ft_strlen(inside_quotes_word), c);
-        //printf("inside quotes word %s is\n", inside_quotes_word);
+        //printf("inside quotes word %s\n", inside_quotes_word);
+        //inside_quotes_word = clean_quotes_from_word(inside_quotes_word, ft_strlen(inside_quotes_word), c);
         if (c == 34 && strchr(inside_quotes_word, '$'))
         {
             tmp = inside_quotes_word;
             inside_quotes_word = expand_quoted_word(inside_quotes_word, env_lst);
+            //printf("inside quotes word %s is\n", inside_quotes_word);
             if (tmp)
                 free(tmp);
             tmp = NULL;
         }
+        else
+            inside_quotes_word = clean_quotes_from_word(inside_quotes_word, ft_strlen(inside_quotes_word), c);
         whole_word = join_and_free(tmp, inside_quotes_word);
         tmp = whole_word;
     }
@@ -131,6 +134,7 @@ char *qouted_word(char **str, char *start, t_lst *env_lst)
         *str = *str + 1;
     }
     qouted_word = make_quoted_word(str, **str, env_lst);
+    //printf("quoted_word is %s\n", qouted_word);
     complete_word = join_and_free(word_before_qoutes, qouted_word);
     /*complete_word = ft_strjoin(word_before_qoutes, qouted_word);
     if (word_before_qoutes)
@@ -146,7 +150,7 @@ char *expand_quoted_word(char *str, t_lst *env_lst)
     //printf("word to expand is %s\n", str);
     char *whole_word;
     char *tmp;
-
+    //$HOMEls
     whole_word = NULL;
     if (!str)
         return (NULL);
@@ -155,6 +159,7 @@ char *expand_quoted_word(char *str, t_lst *env_lst)
         if (*str == '$')
         {
             whole_word = join_and_free(whole_word, expantion(&str, env_lst));
+            //printf("whole word is %s\n", whole_word);
             continue;
         }
         else

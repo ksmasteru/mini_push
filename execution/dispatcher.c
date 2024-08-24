@@ -61,6 +61,7 @@ int parse_cmd(char *line, char **envp, t_data *data)
     else
         execute_cmd(root, 0, 1, data);
     free_all_tokens(&tokens);
+    //printf("line freed\n");
     free(line);
     free_data_variables(data);
     exit (0);

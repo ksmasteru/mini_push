@@ -176,6 +176,7 @@ int main(int ac, char **av, char **envp)
 		else
 			waitpid(pid, NULL, 0);
 		free(line);
+		line = NULL;
 	}
 	if (line)
 		free(line);

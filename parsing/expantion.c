@@ -127,7 +127,9 @@ char *expantion(char **str, t_lst *env_lst)
         expand_word[i++] =  **str;// USER
         *str = *str + 1;
     }
+    //printf("word to expand is %s\n", expand_word);
     expanded_word = get_expanded_word(expand_word, env_lst);//USER -->HICHAM
+    //printf("expanded word is %s\n", expanded_word);
     return (expanded_word);
 }
 
