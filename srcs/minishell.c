@@ -85,7 +85,7 @@ int check_builtin(char *line, t_data *data)
 {
 	// return tvalue of builts for exit code ?
 	int n;
-	
+	data->words_count = 1; // has to be reset
 	n = built_in_code(line);
 	if (n == 0)
 		return (0);
@@ -93,21 +93,27 @@ int check_builtin(char *line, t_data *data)
 	if (n < 7)
 		data->tokens = lexer(line, data->env_lst);
 	tokens_v2(&data->tokens, data);
-	if (n == 1)
-		export(data, data->tokens);//safe
-	if (n == 2)
-		unset(data, data->tokens); // safe
-	if (n == 3)
-		env(data->env); // safe
-	if (n == 4)
-		pwd(line); // safe
-	if (n == 5)
-		cd(line, data); //safe !
-	if (n == 6)
-		ft_echo2(data, line); // safe !
-	if (n == 7)
-		ft_exit(line); // leaks double free?
-	free(line);
+	if (data->words_count == 1)
+	{
+		if (n == 1)
+			export(data, data->tokens);//safe
+		if (n == 2)
+			unset(data, data->tokens); // safe
+		if (n == 3)
+			env(data->env); // safe
+		if (n == 4)
+			pwd(line); // safe
+		if (n == 5)
+			cd(line, data); //safe !
+		if (n == 6)
+			ft_echo2(data, line); // safe !
+		if (n == 7)
+			ft_exit(line); // leaks double free?
+	}
+	else
+		n = 0;
+	if (n)
+		free(line);/*line shoulnt be freed if nothing was executed*/
 	free_all_tokens(&data->tokens);
 	return (n);/*exit code*/
 }

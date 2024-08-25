@@ -46,4 +46,6 @@ int cd(char *path, t_data *data);
 int	ft_atoi(const char *str);
 int	pwd(char *cmd);
 void unset(t_data *data, t_token *token);
+int check_builtin_multiple(char *line, t_data *data);
+int built_in_code(char *line);
 #endif

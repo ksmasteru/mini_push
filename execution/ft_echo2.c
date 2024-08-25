@@ -136,7 +136,7 @@ int cd(char *path, t_data *data)
 			return (1);
 		}
 		tokens->up->location.location[tokens->up->location.lenght] = 0;
-		printf("dir is %s\n",tokens->up->location.location);
+		//printf("dir is %s\n",tokens->up->location.location);
 		if (chdir(tokens->up->location.location) < 0)
 			return (cd_error(path + i, tokens));
 	}

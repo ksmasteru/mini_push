@@ -38,6 +38,7 @@ void free_all_tokens(t_token **tokens)
         free(tmp);
         tmp = holder;
     }
+    *tokens = NULL;
 }
 
 int parse_cmd(char *line, char **envp, t_data *data)

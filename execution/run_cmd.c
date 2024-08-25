@@ -167,15 +167,18 @@ int run_cmd_main(char **args, char *cmd, t_tree *head, t_data *data)
           close_and_dup2(data->fdx, data->index, data->words_count, data->flag);
      // free()
      free(data->line);
-     free_all_tokens(&(data->tokens));
+     //free_all_tokens(&(data->tokens)); //changed for builtins
      free(head);
      head = NULL;
-     if (args != NULL && execve(cmd, args, data->envp) < 0)
+     if (cmd && built_in_code(cmd)) //free all tokens!!
+          check_builtin_multiple(cmd, data);
+     else if (args != NULL && execve(cmd, args, data->envp) < 0)
      {
           ft_putstr_fd(2, cmd);
           write(1,": ", 2);
           perror("");
      }
+     free_all_tokens(&(data->tokens));
      free_data_variables(data);
      free_exec_args(args, cmd, head);
      exit(0);
@@ -324,6 +327,30 @@ int init_exec_check(t_tree *head, t_data *data, int index)
      return (0);
 }
 
+int check_builtin_multiple(char *line, t_data *data)
+{
+     int n;
+	
+	/*n = built_in_code(line);
+	if (n == 0)
+		return (0);*/
+	if (n == 1)
+		export(data, data->tokens);//safe
+	if (n == 2)
+		unset(data, data->tokens); // safe
+	if (n == 3)
+		env(data->env); // safe
+	if (n == 4)
+		pwd(line); // safe
+	if (n == 5)
+		cd(line, data); //safe !
+	if (n == 6)
+		ft_echo2(data, line); // safe !
+	if (n == 7)
+		ft_exit(line); // leaks double free?
+	return (n);/*exit code*/
+}
+
 void free_exec_args(char **args, char *cmd, t_tree *head)
 {
      if (args)
@@ -345,15 +372,17 @@ int execute_cmd(t_tree *head, int index, int len, t_data *data)
      data->pids[index] = fork();
      if (data->pids[index] == 0) /*free tokens tree here ?*/
      {
-          init_exec_check(head, data, index); 
-          if (args && execve(cmd, args, data->envp) < 0) // short circuit evaluation
+          init_exec_check(head, data, index);
+          if (cmd && built_in_code(cmd)) //free all tokens!!
+               check_builtin_multiple(cmd, data);
+          else if (args && execve(cmd, args, data->envp) < 0) // short circuit evaluation
           {
                ft_putstr_fd(2, cmd);
                write(1,": ", 2);
                perror("");
           }
           free_exec_args(args, cmd, head);//free tokens ?
-          exit(EXIT_FAILURE);
+          exit(EXIT_SUCCESS);
      }
      free_exec_args(args, cmd, head);
      return (0);
